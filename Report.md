@@ -96,8 +96,8 @@ debug了下图模型的相关代码
 swin_transformer_unet_skip_expand_decoder_sys.py
 def forward(self, x):
         x, x_downsample = self.forward_features(x) #x:[1,3,512,512]=>=>=>[1,256,768]  #x:[1,256,768] x_downsample<x>(4,x)
-        x = self.forward_up_features(x,x_downsample) 
-        x = self.up_x4(x)
+        x = self.forward_up_features(x,x_downsample) #x:[1,256,768] =>[1,16384,96]
+        x = self.up_x4(x) #x:[1,16384,96] =>[1,2,512,512]
 
         return x
 ```
