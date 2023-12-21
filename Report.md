@@ -80,9 +80,14 @@ db_train = Synapse_dataset(base_dir=args.root_path, list_dir=args.list_dir, spli
 trainloader = DataLoader(db_train, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True,
                              worker_init_fn=worker_init_fn)
 ```
-loss
+loss：
 
-![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/316cb410-3c5d-45a3-abf2-34dc801fa674)
+CrossEntropyLoss()
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/7b5fe368-ac85-4ced-89f7-8f096f051af3)
+BCEWithLogitsLoss()/nn.BCELoss
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/549cd873-4898-48fb-9113-caf4a9f9b7c3)
+
+
 ```python
 ce_loss = CrossEntropyLoss()
 dice_loss = DiceLoss(num_classes)
