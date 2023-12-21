@@ -35,10 +35,69 @@ count()
 mean_dice 0.999922 mean_hd95 0.000000
 ```
 从mean_dice 0.999922接近于1 说明是过拟合的了
-但是可视化的输出是一张全绿的图
+可视化的输出
 
-不知道改哪了 
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/042c7fb7-1da6-49ae-84ef-6d3fc6051d1d)
+
+# 23/12/21
+输入的数据生成代码
+```python
+def npz():
+    #原图像路径
+    path = r'/home/yjr/Swin-Unet/data/Synapse/images/*.png'
+    #项目中存放训练所用的npz文件路径
+    path2 = r'/home/yjr/Swin-Unet/data/Synapse/train_npz/'
+    
+    for i, img_path in enumerate(glob.glob(path)):
+        # 读入图像
+        image = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE) 
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) #转成RGB
+        # 读入标签
+        label_path = img_path.replace('images', 'labels')
+        label = cv2.imread(label_path, flags = cv2.IMREAD_GRAYSCALE)
+        print("Image shape:", image.shape) (512,512,3)
+        print("Label shape:", label.shape) (512,512)
+        label[label != 255] = 1  # 将非白色像素设置为1
+        label[label == 255] = 0  # 将白色像素设置为0
+
+        img_name = os.path.splitext(os.path.basename(img_path))[0]        
+        # count_label_255 = np.sum(label == 255)#白色
+        # count_label_not_255 = np.sum(label != 255)#黑色
+        # 保存npz
+        np.savez(os.path.join(path2, f'{img_name}.npz'), image=image, label=label)
+        print('------------', i)
+        # print(f"Number of pixels with label 255: {count_label_255}")
+        # print(f"Number of pixels with label not 255: {count_label_not_255}")
+npz()
 ```
-mean_dice 0.0000 mean_hd95 0.000000
+
+dataloader
+```python
+# 初始化数据集 对图片进行随机旋转、翻转 读入image(512,512,3)->(3,512,512) 将label转为long
+db_train = Synapse_dataset(base_dir=args.root_path, list_dir=args.list_dir, split="train",
+    transform=transforms.Compose([RandomGenerator(output_size=[args.img_size, args.img_size])]))
+#.................
+trainloader = DataLoader(db_train, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True,
+                             worker_init_fn=worker_init_fn)
 ```
-图片全黑
+loss
+
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/316cb410-3c5d-45a3-abf2-34dc801fa674)
+```python
+ce_loss = CrossEntropyLoss()
+dice_loss = DiceLoss(num_classes)
+```
+
+model
+
+debug了下图模型的相关代码
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/12f48350-1906-4211-95e1-db9b73f93de6)
+```python
+swin_transformer_unet_skip_expand_decoder_sys.py
+def forward(self, x):
+        x, x_downsample = self.forward_features(x) #x:[1,3,512,512]=>=>=>[1,256,768]  #x:[1,256,768] x_downsample<x>(4,x)
+        x = self.forward_up_features(x,x_downsample) 
+        x = self.up_x4(x)
+
+        return x
+```
