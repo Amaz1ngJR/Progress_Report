@@ -114,11 +114,28 @@ BCEWithLogitsLoss()/nn.BCELoss
 ![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/549cd873-4898-48fb-9113-caf4a9f9b7c3)
 
 ```
-bash_lr=0.0001  max_epochs=500 epoch_149.th
+base_lr=0.00005  max_epochs=100  loss->0.48 epoch_99.th mean_dice=1
 ```
-![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/30450e24-9042-47e2-b066-0747fc3a22af)
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/07f322d2-d288-4d0e-8017-696eed269123)
 ```
-bash_lr=0.0001  max_epochs=500 epoch_199.th
+base_lr=0.00005  max_epochs=300 epoch_199.th loss->0.48 mean_dice=1
 ```
-![50abb159f4e096479672e810a0842782](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/7df9d735-c6d0-47f1-a871-5d5376de4fe7)
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/6defa587-dd35-4ebd-a481-e55e49ca0546)
+```
+base_lr=0.00005  max_epochs=300 epoch_249.th loss->0.48 mean_dice=1
+```
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/f2b2b0f0-e028-4333-94de-73c587359c47)
 
+```
+base_lr=0.0001  max_epochs=100  epoch_99.th loss->0.40  mean_dice=1
+```
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/79d88836-f47a-4954-abb0-ddbaeecfa7ec)
+
+```
+base_lr=0.0001  max_epochs=200  epoch_149.th loss->0.36  mean_dice=1
+```
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/46da2b5f-bce1-4882-884f-b8e9ceec9c89)
+
+```
+base_lr超过0.005 epoch149全黑
+```
