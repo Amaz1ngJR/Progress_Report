@@ -139,3 +139,11 @@ base_lr=0.0001  max_epochs=200  epoch_149.th loss->0.36  mean_dice=1
 ```
 base_lr超过0.005 epoch149全黑
 ```
+output和label_batch对不上 修改以后
+
+取消掉对dataloder的旋转
+```
+base_lr = 0.0005 epoch=2400 loss->17.0收敛
+```
+![W89%SX64D%Z4Y0WUH{3D(EH](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/acee707d-c37b-4667-acbc-7f589d64d6c0)
+
