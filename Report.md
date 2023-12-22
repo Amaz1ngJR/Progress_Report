@@ -30,11 +30,15 @@ def count():
     print(f"Number of pixels with label not 255: {count_label_not_255}")
 count()
 ```
+将学习率调小至0.0001出现过拟合
+```python
+bash_lr = 0.0001 学习率
+```
 测试单张图的输出如下
 ```
-mean_dice 0.999922 mean_hd95 0.000000
+mean_dice 1.0000000 mean_hd95 0.000000
 ```
-从mean_dice 0.999922接近于1 说明是过拟合的了
+从mean_dice 为1 说明是过拟合的了
 可视化的输出
 
 ![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/042c7fb7-1da6-49ae-84ef-6d3fc6051d1d)
@@ -82,12 +86,6 @@ trainloader = DataLoader(db_train, batch_size=batch_size, shuffle=True, num_work
 ```
 loss：
 
-CrossEntropyLoss()
-![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/7b5fe368-ac85-4ced-89f7-8f096f051af3)
-BCEWithLogitsLoss()/nn.BCELoss
-![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/549cd873-4898-48fb-9113-caf4a9f9b7c3)
-
-
 ```python
 ce_loss = CrossEntropyLoss()
 dice_loss = DiceLoss(num_classes)
@@ -106,3 +104,21 @@ def forward(self, x):
 
         return x
 ```
+# 23/12/22
+
+CrossEntropyLoss()
+
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/7b5fe368-ac85-4ced-89f7-8f096f051af3)
+BCEWithLogitsLoss()/nn.BCELoss
+
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/549cd873-4898-48fb-9113-caf4a9f9b7c3)
+
+```
+bash_lr=0.0001  max_epochs=500 epoch_149.th
+```
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/30450e24-9042-47e2-b066-0747fc3a22af)
+```
+bash_lr=0.0001  max_epochs=500 epoch_199.th
+```
+![50abb159f4e096479672e810a0842782](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/7df9d735-c6d0-47f1-a871-5d5376de4fe7)
+
