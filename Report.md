@@ -147,3 +147,16 @@ base_lr = 0.0005 epoch=2400 loss->17.0收敛
 ```
 ![W89%SX64D%Z4Y0WUH{3D(EH](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/acee707d-c37b-4667-acbc-7f589d64d6c0)
 
+# 23/12/26
+```python
+
+```
+将输入的图片进行分块，使用相同的loss分别计算 当loss降到20左右
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/b154730b-8d4b-4ff2-ae20-9d34f6d952e3)
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/517b57d9-bd44-43b0-a788-a525c5d4ab83)
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/bc8438e3-c589-4070-b8bf-61bd89062ea4)
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/d5eb1eb5-f535-4312-bf05-89d4dae567a6)
+
+
+
+
