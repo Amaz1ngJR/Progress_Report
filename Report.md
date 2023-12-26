@@ -149,7 +149,107 @@ base_lr = 0.0005 epoch=2400 loss->17.0收敛
 
 # 23/12/25-26
 ```python
+def trainer_synapse(args, model, snapshot_path):
+    from datasets.dataset_synapse import Synapse_dataset, RandomGenerator
+    logging.basicConfig(filename=snapshot_path + "/log.txt", level=logging.INFO,
+                        format='[%(asctime)s.%(msecs)03d] %(message)s', datefmt='%H:%M:%S')
+    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+    logging.info(str(args))
+    base_lr = args.base_lr
+    num_classes = args.num_classes  # 2
+    batch_size = args.batch_size * args.n_gpu # 2
+    # 初始化数据集 对图片进行随机旋转、翻转 读入image(512,512,3)->(3,512,512) 将label转为long
+    db_train = Synapse_dataset(base_dir=args.root_path, list_dir=args.list_dir, split="train",
+                               transform=transforms.Compose(
+                                   [RandomGenerator(output_size=[args.img_size, args.img_size])]))
+    print("The length of train set is: {}".format(len(db_train)))
 
+    def worker_init_fn(worker_id):
+        random.seed(args.seed + worker_id)
+    trainloader = DataLoader(db_train, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True,
+                             worker_init_fn=worker_init_fn)
+    if args.n_gpu > 1:
+        model = nn.DataParallel(model)
+    model.train()
+    
+    #损失函数和优化器初始化
+    ce_loss = CrossEntropyLoss()
+    optimizer = optim.SGD(model.parameters(), lr=base_lr, momentum=0.9, weight_decay=0.0001)
+    
+    writer = SummaryWriter(snapshot_path + '/log')
+    iter_num = 0
+    max_epoch = args.max_epochs
+    max_iterations = args.max_epochs * len(trainloader)  # max_epoch = max_iterations // len(trainloader) + 1
+    logging.info("{} iterations per epoch. {} max iterations ".format(len(trainloader), max_iterations))
+    iterator = tqdm(range(max_epoch), ncols=70)
+    
+    # 主训练循环
+    for epoch_num in iterator:
+        for i_batch, sampled_batch in enumerate(trainloader):
+            # image_batch.size() [1,3,512,512] label_batch.size() [1,512,512]
+            image_batch, label_batch = sampled_batch['image'], sampled_batch['label']
+            image_batch, label_batch = image_batch.cuda(), label_batch.cuda()
+            # 将输入图像横向和纵向均匀分成四块
+            h, w = image_batch.size(2), image_batch.size(3)
+            h_quarters, w_quarters = h // 2, w // 2
+            image_quarters = [
+                image_batch[:, :, :h_quarters, :w_quarters],
+                image_batch[:, :, :h_quarters, w_quarters:],
+                image_batch[:, :, h_quarters:, :w_quarters],
+                image_batch[:, :, h_quarters:, w_quarters:]
+            ]
+
+            label_quarters = [
+                label_batch[:, :h_quarters, :w_quarters],
+                label_batch[:, :h_quarters, w_quarters:],
+                label_batch[:, h_quarters:, :w_quarters],
+                label_batch[:, h_quarters:, w_quarters:]
+            ]
+
+            total_loss = 0.0
+            resize_transform = Resize(512)
+            for image_quarter, label_quarter in zip(image_quarters, label_quarters):
+                image_quarter = resize_transform(image_quarter)
+                label_quarter = resize_transform(label_quarter)
+                outputs = model(image_quarter)
+                outputs = outputs.squeeze(0)
+                cv2.imshow("GT", label_quarter.permute(1,2,0).detach().cpu().numpy().astype(np.uint8) * 255)
+                cv2.imshow("outputs", outputs.permute(1,2,0).detach().cpu().numpy().astype(np.uint8) * 255)
+                cv2.waitKey(0)
+                # 使用相同的交叉熵损失
+                loss_ce = ce_loss(outputs, label_quarter)
+
+                total_loss += loss_ce.item()
+
+                optimizer.zero_grad()
+                loss_ce.backward()
+                optimizer.step()
+
+            # 取四块损失的平均值作为总体损失
+            avg_loss = total_loss / len(image_quarters)
+
+            cv2.imshow("GT", label_batch.permute(1,2,0).detach().cpu().numpy().astype(np.uint8) * 255)
+            cv2.imshow("outputs", outputs.permute(1,2,0).detach().cpu().numpy().astype(np.uint8) * 255)
+            cv2.waitKey(0)
+
+            loss = 0.4 * torch.tensor(avg_loss, requires_grad=True)
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            lr_ = base_lr * (1.0 - iter_num / max_iterations) ** 0.9  #学习率逐渐降低
+            for param_group in optimizer.param_groups:
+                param_group['lr'] = lr_
+
+            iter_num = iter_num + 1
+            writer.add_scalar('info/lr', lr_, iter_num)
+            writer.add_scalar('info/total_loss', loss, iter_num)
+            writer.add_scalar('info/loss_ce', loss_ce, iter_num)
+
+            logging.info('iteration %d : loss : %f, loss_ce: %f' % (iter_num, loss.item(), loss_ce.item()))
+
+    writer.close()
+    return "Training Finished!"
 ```
 将输入的图片进行分块，使用相同的loss分别计算 当loss降到20左右
 ![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/8d353b98-6815-4c8a-a77e-8b09d02c34e2)
