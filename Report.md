@@ -257,6 +257,6 @@ def trainer_synapse(args, model, snapshot_path):
 ![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/bc8438e3-c589-4070-b8bf-61bd89062ea4)
 ![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/0da81ae4-f142-45a1-b584-0d9d439a4e89)
 
-
+# 23/12/27
 
 
