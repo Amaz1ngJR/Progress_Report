@@ -305,10 +305,6 @@ def random_crop_images(image1, image2, crop_size=(256, 256), seed=None):
             
             # 使用相同的种子确保图像和标签在相同的位置被裁剪
             seed_ = torch.randint(0, 2**32 - 1, (1,))
-
-            # # 随机裁剪输入图像和标签
-            # crop_size = (256, 256)  # 设置裁剪的大小
-            # random_crop = RandomCrop(crop_size)
             resize_transform = Resize(512) # 设置resize大小
             # 使用 crop 进行裁剪
             image_batch, label_batch = random_crop_images(image_batch,
