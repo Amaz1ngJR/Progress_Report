@@ -258,5 +258,23 @@ def trainer_synapse(args, model, snapshot_path):
 ![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/0da81ae4-f142-45a1-b584-0d9d439a4e89)
 
 # 23/12/27
+设置RandomCrop使用pytorch自带的
+```python
+# 随机裁剪输入图像和标签
+crop_size = (256, 256)  # 设置裁剪的大小
+random_crop = RandomCrop(crop_size)
+//------image_batch和label_batch剪切的地方不一致 没法正确计算loss
+image_batch = random_crop(image_batch)
+label_batch = random_crop(label_batch)
+```
+尝试固定seed 但是没有用
+```python
+# 使用相同的种子确保图像和标签在相同的位置被裁剪
+seed_ = torch.randint(0, 2**32 - 1, (1,))
+torch.manual_seed(seed_.item())
+torch.cuda.manual_seed_all(seed_.item())
+```
+网上看到tensorflow里的random_crop可以设置seed参数
+```python
 
-
+```
