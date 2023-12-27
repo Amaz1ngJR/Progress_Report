@@ -274,7 +274,65 @@ seed_ = torch.randint(0, 2**32 - 1, (1,))
 torch.manual_seed(seed_.item())
 torch.cuda.manual_seed_all(seed_.item())
 ```
-网上看到tensorflow里的random_crop可以设置seed参数
+借助gpt写了一个可以设置seed的
 ```python
+def random_crop_images(image1, image2, crop_size=(256, 256), seed=None):
+    # 获取图像的大小
+    width = 512 
+    height = 512
 
+    # 设置种子
+    if seed is not None:
+        random.seed(seed)
+
+    # 随机生成裁剪框的左上角坐标
+    left = random.randint(0, width - crop_size[0])
+    top = random.randint(0, height - crop_size[1])
+
+    # 裁剪图像张量
+    cropped_tensor1 = image1[:, :, top:top + crop_size[1], left:left + crop_size[0]]
+    cropped_tensor2 = image2[:, top:top + crop_size[1], left:left + crop_size[0]]
+
+    return cropped_tensor1, cropped_tensor2
 ```
+```python
+ # 主训练循环
+    for epoch_num in iterator:
+        for i_batch, sampled_batch in enumerate(trainloader):
+            # image_batch.size() [1,3,512,512] label_batch.size() [1,512,512]
+            image_batch, label_batch = sampled_batch['image'], sampled_batch['label']
+            image_batch, label_batch = image_batch.cuda(), label_batch.cuda()
+            
+            # 使用相同的种子确保图像和标签在相同的位置被裁剪
+            seed_ = torch.randint(0, 2**32 - 1, (1,))
+
+            # # 随机裁剪输入图像和标签
+            # crop_size = (256, 256)  # 设置裁剪的大小
+            # random_crop = RandomCrop(crop_size)
+            resize_transform = Resize(512) # 设置resize大小
+            # 使用 crop 进行裁剪
+            image_batch, label_batch = random_crop_images(image_batch,
+                    label_batch, seed = seed_)
+            
+            image_batch = resize_transform(image_batch)
+            label_batch = resize_transform(label_batch)
+
+            outputs = model(image_batch)
+            outputs = outputs.squeeze(0)
+            cv2.imshow("GT", label_batch.permute(1,2,0).detach().cpu().numpy().astype(np.uint8) * 255)
+            cv2.imshow("outputs", outputs.permute(1,2,0).detach().cpu().numpy().astype(np.uint8) * 255)
+            cv2.waitKey(0)
+            loss_ce = ce_loss(outputs, label_batch)
+
+            # optimizer.zero_grad()
+            # loss_ce.backward()
+            # optimizer.step()
+
+            loss = 0.4 * loss_ce 
+```
+epoch7000多次的结果(loss 30左右 还没收敛)
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/95da38d2-2963-4f1e-a428-f4748ba1eebd)
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/a5d91dd1-70d8-476b-bf59-b2ced7fbb4b8)
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/e1bb06e4-3944-402b-a990-603458ef45a2)
+
+
