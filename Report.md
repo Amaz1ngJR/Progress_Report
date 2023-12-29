@@ -331,4 +331,7 @@ epoch7000多次的结果(loss 30左右 还没收敛)
 ![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/a5d91dd1-70d8-476b-bf59-b2ced7fbb4b8)
 ![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/e1bb06e4-3944-402b-a990-603458ef45a2)
 
-
+# 23/12/29
+训练5000次
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/e44471cf-f614-4138-9a86-ced2b65a632e)
+训练1W次
