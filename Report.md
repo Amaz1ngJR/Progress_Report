@@ -335,4 +335,7 @@ epoch7000多次的结果(loss 30左右 还没收敛)
 训练5000次
 ![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/e44471cf-f614-4138-9a86-ced2b65a632e)
 训练4W次
+```
+tensorboard --logdir /home/yjr/Swin-Unet/output/log
+```
 ![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/1488d422-203c-4fa3-ae10-9984e852cfde)
