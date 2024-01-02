@@ -1,4 +1,4 @@
-![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/29324a70-e128-4f20-9aef-3c0a62dc5e33)# 23/12/19
+# 23/12/19
 修改相应代码 跑了测试集 输出
 ```
 mean dice 0.050981 mean hd95 171.000000
