@@ -1,4 +1,4 @@
-# 23/12/19
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/29324a70-e128-4f20-9aef-3c0a62dc5e33)# 23/12/19
 修改相应代码 跑了测试集 输出
 ```
 mean dice 0.050981 mean hd95 171.000000
@@ -339,3 +339,11 @@ epoch7000多次的结果(loss 30左右 还没收敛)
 tensorboard --logdir /home/yjr/Swin-Unet/output/log
 ```
 ![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/1488d422-203c-4fa3-ae10-9984e852cfde)
+
+# 24/1/2
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/d645a353-7f10-419a-8ad2-fb28f8337f30)
+训练5W次的test结果全黑
+
+但是正常不剪切的test也是全黑
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/e69c1026-e8e2-439b-8376-249868609fca)
+
