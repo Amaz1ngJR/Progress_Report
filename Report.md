@@ -347,3 +347,10 @@ tensorboard --logdir /home/yjr/Swin-Unet/output/log
 但是正常不剪切的test也是全黑
 ![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/e69c1026-e8e2-439b-8376-249868609fca)
 
+# 24/1/17
+
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/02691460-705b-4856-b0bd-26b42e898caf)
+```c++
+cv::Mat image1(512, 512, CV_32F, cv::Scalar(1.0)); //使用CV_32F 像素值是[-1.0, 1.0]
+```
+![image](https://github.com/Amaz1ngJR/Progress_Report/assets/83129567/4d225ead-e045-44fd-9bf9-5e35d354d5b0)
